@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lịch học của học sinh</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: linear-gradient(135deg, #00C4B4, #3F51B5);
+      --secondary: #3F51B5;
+      --accent: #E0F7FA;
+      --warning: #F06292;
+      --text-main: #004D40;
+      --background: #F4F6F9;
+      --white: #FFFFFF;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      --offline-gradient: linear-gradient(135deg, #FFCA28, #FF8F00); /* Orange-yellow gradient */
+      --online-gradient: linear-gradient(135deg, #66BB6A, #2E7D32); /* Green gradient */
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--background);
+      padding: 20px;
+      color: #333;
+    }
+
+    .schedule-container {
+      max-width: 1200px;
+      margin: auto;
+      background-color: var(--white);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      position: relative;
+      border: 2px solid transparent;
+      background-image: linear-gradient(var(--white), var(--white)), var(--primary);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 22px;
+      background: var(--white);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-button:hover {
+      background: var(--warning);
+      color: var(--white);
+      transform: rotate(90deg);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+      background: var(--primary);
+      padding: 12px;
+      border-radius: 10px;
+      color: var(--white);
+    }
+
+    .header h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .actions button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      background: var(--primary);
+      color: var(--white);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .actions button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 196, 180, 0.3);
+    }
+
+    .calendar-nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .calendar-nav button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background: var(--primary);
+      color: var(--white);
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .calendar-nav button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 196, 180, 0.3);
+    }
+
+    .calendar-nav strong {
+      align-self: center;
+      font-size: 16px;
+      color: var(--text-main);
+    }
+
+    .calendar-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    .calendar-table th, .calendar-table td {
+      border: 1px solid var(--accent);
+      padding: 12px;
+      text-align: center;
+      vertical-align: center;
+      height: 80px;
+      background: var(--white);
+    }
+
+    .calendar-table th {
+      background: var(--primary);
+      color: var(--white);
+      font-size: 16px;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .calendar-table th .date {
+      display: block;
+      font-size: 14px;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
+    .lesson-box {
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 14px;
+      color: var(--white);
+      margin-bottom: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      font-weight: 500;
+    }
+
+
+    .offline {
+      background: var(--offline-gradient);
+    }
+
+    .online {
+      background: var(--online-gradient);
+    }
+
+    @media (max-width: 768px) {
+      .schedule-container {
+        padding: 16px;
+        margin: 10px;
+      }
+
+      .header h2 {
+        font-size: 24px;
+      }
+
+      .actions {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .calendar-nav {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .calendar-table th, .calendar-table td {
+        font-size: 13px;
+        padding: 8px;
+        height: 80px;
+      }
+
+      .calendar-table th .date {
+        font-size: 12px;
+        font-style: italic;
+      }
+
+      .lesson-box {
+        font-size: 12px;
+        padding: 6px 8px;
+      }
+
+      .lesson-box .date {
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="schedule-container">
+    <button class="close-button" onclick="history.back()" title="Đóng"><i class="fas fa-times"></i></button>
+
+    <div class="header">
+      <h2><i class="fas fa-calendar-alt"></i> Lịch học của học sinh</h2>
+    </div>
+
+    <div class="actions">
+      <button><i class="fas fa-print"></i> In lịch học</button>
+     
+      <button><i class="fas fa-calendar-plus"></i> Đồng bộ lịch</button>
+    </div>
+
+    <div class="calendar-nav">
+      <button>← Tuần trước</button>
+      <strong>Tuần hiện tại: 01/07 - 07/07</strong>
+      <button>Tuần sau →</button>
+    </div>
+
+    <table class="calendar-table">
+      <thead>
+        <tr>
+          <th>Thứ hai<br><span class="date">30/06/2025</span></th>
+          <th>Thứ ba<br><span class="date">01/07/2025</span></th>
+          <th>Thứ tư<br><span class="date">02/07/2025</span></th>
+          <th>Thứ năm<br><span class="date">03/07/2025</span></th>
+          <th>Thứ sáu<br><span class="date">04/07/2025</span></th>
+          <th>Thứ bảy<br><span class="date">05/07/2025</span></th>
+          <th>Chủ nhật<br><span class="date">06/07/2025</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td></td>
+          <td>
+            <div class="lesson-box offline">
+ 
+              17:00 - 18:30<br>
+              Scratch<br>
+              Cô Trâm
+            </div>
+            <div class="lesson-box online">
+              
+              19:00 - 20:00<br>
+              Python<br>
+              Thầy Hà
+            </div>
+          </td>
+          <td>
+            <div class="lesson-box offline">
+            
+              17:00 - 18:30<br>
+              Scratch<br>
+              Cô Trâm
+            </div>
+          </td>
+          <td></td>
+          <td>
+            <div class="lesson-box online">
+         
+              18:00 - 19:00<br>
+              Python<br>
+              Thầy Hà
+            </div>
+            <div class="lesson-box offline">
+         
+              16:00 - 17:30<br>
+              Scratch<br>
+              Cô Trâm
+            </div>
+          </td>
+          <td>
+            <div class="lesson-box online">
+           
+              18:00 - 19:00<br>
+              Python<br>
+              Thầy Hà
+            </div>
+          </td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

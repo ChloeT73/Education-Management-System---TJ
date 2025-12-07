@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiến độ học tập - Tech Junior</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #00C4B4;
+            --secondary: #3F51B5;
+            --accent: #E0F7FA;
+            --warning: #F06292;
+            --text-main: #004D40;
+            --background: #F4F6F9;
+            --white: #FFFFFF;
+            --card-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--background);
+            color: #333;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            max-width: 1000px;
+            margin: auto;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+        }
+
+        .header-banner {
+            background: var(--gradient);
+            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            margin: -30px -30px 20px;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .section-header {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--white);
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .close-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 18px;
+            background: var(--white);
+            border: 2px solid var(--accent);
+            border-radius: 50%;
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-button:hover {
+            background: var(--warning);
+            color: var(--white);
+            transform: rotate(90deg);
+        }
+
+        .filter {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 16px;
+        }
+
+        .filter select {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+            background: var(--white);
+            color: var(--text-main);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter select:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(0, 196, 180, 0.2);
+        }
+
+        .overview {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .overview-item {
+            background: linear-gradient(90deg, var(--accent), #B2EBF2);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .overview-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 12px rgba(0, 196, 180, 0.3);
+        }
+
+        .overview-item .label {
+            font-size: 13px;
+            color: #78909C;
+            margin-bottom: 6px;
+        }
+
+        .overview-item .value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .overview-item .progress-bar {
+            height: 6px;
+            background: #ECEFF1;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .overview-item .progress-bar span {
+            display: block;
+            height: 100%;
+            background: var(--gradient);
+            width: 66.67%; /* 20/30 */
+        }
+
+        .overview-item button {
+            margin-top: 8px;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            background: var(--secondary);
+            color: var(--white);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .overview-item button:hover {
+            background: #5C6BC0;
+            transform: scale(1.05);
+        }
+
+        .chart-container {
+            max-width: 250px;
+            margin: 16px auto;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .suggestion {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            background: linear-gradient(90deg, #FFEBEE, #FCE4EC);
+            color: var(--warning);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .suggestion:hover {
+            transform: translateX(4px);
+        }
+
+        .subject-item {
+            background: linear-gradient(90deg, var(--accent), #B2EBF2);
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .subject-item:hover {
+            background: linear-gradient(90deg, #B2EBF2, var(--accent));
+        }
+
+        .subject-details {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .subject-details.active {
+            display: block;
+        }
+
+        .subject-details table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        .subject-details th, .subject-details td {
+            border: 1px solid #ECEFF1;
+            padding: 8px;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        .subject-details th {
+            background: var(--gradient);
+            color: var(--white);
+        }
+
+        .progress-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 80%, #ECEFF1 80%);
+            margin-left: 8px;
+            font-size: 12px;
+            color: var(--text-main);
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .progress-circle:hover {
+            transform: scale(1.1);
+        }
+
+        .message-thread {
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid #ECEFF1;
+            padding: 8px;
+            border-radius: 10px;
+            margin-top: 10px;
+            background: var(--accent);
+        }
+
+        .message-thread .message {
+            margin-bottom: 6px;
+            padding: 6px;
+            background: var(--white);
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .message-thread .message.sent {
+            background: #E8EAF6;
+            text-align: right;
+        }
+
+        .study-log {
+            margin-top: 10px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .study-log select {
+            padding: 6px;
+            border-radius: 8px;
+            border: 1px solid #ECEFF1;
+        }
+
+        .timeline {
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .timeline-item {
+            font-size: 13px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            transform: translateX(4px);
+        }
+
+        .timeline-item i {
+            color: var(--primary);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .action-buttons button, .subject-details button {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 10px;
+            background: var(--gradient);
+            color: var(--white);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-buttons button:hover, .subject-details button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 196, 180, 0.3);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 16px;
+            width: 380px;
+            max-width: 90%;
+            box-shadow: var(--card-shadow);
+            animation: slideIn 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--text-main);
+            font-size: 18px;
+        }
+
+        .modal-content textarea, .modal-content select, .modal-content input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #ECEFF1;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            background: var(--primary);
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-content button:hover {
+            background: #26A69A;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 20px;
+                margin: 10px;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                max-width: 100%;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .header-banner {
+                margin: -20px -20px 16px;
+                padding: 16px;
+            }
+
+            .modal-content {
+                width: 90%;
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-content">
+        <div class="header-banner">
+            <h1 class="section-header">Tiến độ học tập</h1>
+        </div>
+        <button class="close-button" onclick="history.back()" title="Đóng"><i class="fas fa-times"></i></button>
+
+        <!-- Filter -->
+        <div class="filter">
+            <select onchange="updateCharts(this.value)">
+                <option value="all">Tất cả môn học</option>
+                <option value="scratch">Môn học: Scratch</option>
+                <option value="python">Môn học: Python</option>
+            </select>
+        </div>
+
+        <!-- Overview -->
+        <div class="overview">
+            <div class="overview-grid">
+                <div class="overview-item">
+                    <div class="label"><i class="fas fa-star"></i> Điểm trung bình</div>
+                    <div class="value">8.5</div>
+                </div>
+                <div class="overview-item">
+                    <div class="label"><i class="fas fa-chair"></i> Buổi học đã tham gia</div>
+                    <div class="value">20 / 30</div>
+                    <div class="progress-bar"><span></span></div>
+                </div>
+                <div class="overview-item">
+                    <div class="label"><i class="fas fa-times-circle"></i> Buổi vắng mặt</div>
+                    <div class="value">2</div>
+                    <button onclick="alert('Chi tiết buổi vắng: 01/07/2025, 03/07/2025')">Xem chi tiết</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="homeworkChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-lightbulb"></i> Gợi ý tuần này</div>
+            <div class="suggestion"><i class="fas fa-exclamation-circle"></i> Hoàn thành BT1 – Scratch (hạn cuối: 14/07/2025)</div>
+            <div class="suggestion"><i class="fas fa-exclamation-circle"></i> Hoàn thành BT2 – Python (hạn cuối: 15/07/2025)</div>
+        </div>
+
+        <!-- Recent Activity Timeline -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-clock"></i> Hoạt động gần đây</div>
+            <div class="timeline">
+                <div class="timeline-item"><i class="fas fa-check-circle"></i> Nộp BT1 – Scratch (10/07/2025)</div>
+                <div class="timeline-item"><i class="fas fa-comment"></i> Gửi trao đổi với Thầy Hà (11/07/2025)</div>
+                <div class="timeline-item"><i class="fas fa-check-circle"></i> Hoàn thành bài kiểm tra Python (12/07/2025)</div>
+            </div>
+        </div>
+
+        <!-- Subject Progress -->
+        <div class="section">
+            <div class="section-title"><i class="fas fa-book"></i> Tiến độ môn học</div>
+            <div class="subject-item" onclick="toggleDetails('scratch')">
+                <div>Scratch <span style="float: right; color: #78909C;">ĐTB: 8.7 | TB lớp: 8.2</span><span class="progress-circle">80%</span></div>
+                <div class="subject-details" id="scratch">
+                    <div class="chart-container">
+                        ```chartjs
+                        {
+                            "type": "bar",
+                            "data": {
+                                "labels": ["08/07", "10/07"],
+                                "datasets": [{
+                                    "label": "Điểm Scratch",
+                                    "data": [8.5, 9.0],
+                                    "backgroundColor": "#00C4B4"
+                                }]
+                            },
+                            "options": {
+                                "responsive": true,
+                                "scales": { "y": { "beginAtZero": true, "max": 10 } },
+                                "plugins": {
+                                    "legend": { "display": false },
+                                    "tooltip": { "enabled": true },
+                                    "datalabels": { "color": "#004D40", "font": { "size": 12 } }
+                                }
+                            }
+                        }
+                        ```
+                        ```chartjs
+                        {
+                            "type": "line",
+                            "data": {
+                                "labels": ["08/07", "10/07"],
+                                "datasets": [{
+                                    "label": "Tiến bộ điểm Scratch",
+                                    "data": [8.5, 9.0],
+                                    "borderColor": "#004D40",
+                                    "fill": false
+                                }]
+                            },
+                            "options": {
+                                "responsive": true,
+                                "scales": { "y": { "beginAtZero": true, "max": 10 } },
+                                "plugins": {
+                                    "legend": { "display": false },
+                                    "tooltip": { "enabled": true },
+                                    "datalabels": { "color": "#004D40", "font": { "size": 12 } }
+                                }
+                            }
+                        }
+                        ```
+                    </div>
+                    <table>
+                        <tr><th>Ngày</th><th>Bài kiểm tra</th><th>Điểm</th><th>Bài tập</th><th>Trạng thái</th><th>Nhận xét</th></tr>
+                        <tr><td>08/07/2025</td><td>Bài 1</td><td>8.5</td><td>BT1</td><td>Hoàn thành</td><td>Tốt</td></tr>
+                        <tr><td>10/07/2025</td><td>Bài 2</td><td>9.0</td><td>BT2</td><td>Hoàn thành</td><td>Tiến bộ tốt</td></tr>
+                    </table>
+                    <div class="message-thread" id="scratch-messages">
+                        <div class="message">Cô Trâm: Cần chú ý hơn đến cấu trúc code. (10/07/2025)</div>
+                        <div class="message sent">Phụ huynh: Cảm ơn cô, em sẽ luyện tập thêm. (11/07/2025)</div>
+                    </div>
+                    <button onclick="openContactModal('Cô Trâm', 'Scratch')">Gửi trao đổi với giáo viên</button>
+                    <div class="study-log">
+                        <p>Nhật ký học tập (10/07/2025): <span>😊</span></p>
+                        <select onchange="logEmotion(this.value, 'Scratch', '10/07/2025')">
+                            <option value="">Chọn cảm xúc</option>
+                            <option value="😊">😊 Vui</option>
+                            <option value="😐">😐 Bình thường</option>
+                            <option value="😩">😩 Khó khăn</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="subject-item" onclick="toggleDetails('python')">
+                <div>Python <span style="float: right; color: #78909C;">ĐTB: 8.3 | TB lớp: 8.0</span><span class="progress-circle">75%</span></div>
+                <div class="subject-details" id="python">
+                    <div class="chart-container">
+                        ```chartjs
+                        {
+                            "type": "bar",
+                            "data": {
+                                "labels": ["09/07", "11/07"],
+                                "datasets": [{
+                                    "label": "Điểm Python",
+                                    "data": [8.0, 8.5],
+                                    "backgroundColor": "#00C4B4"
+                                }]
+                            },
+                            "options": {
+                                "responsive": true,
+                                "scales": { "y": { "beginAtZero": true, "max": 10 } },
+                                "plugins": {
+                                    "legend": { "display": false },
+                                    "tooltip": { "enabled": true },
+                                    "datalabels": { "color": "#004D40", "font": { "size": 12 } }
+                                }
+                            }
+                        }
+                        ```
+                        ```chartjs
+                        {
+                            "type": "line",
+                            "data": {
+                                "labels": ["09/07", "11/07"],
+                                "datasets": [{
+                                    "label": "Tiến bộ điểm Python",
+                                    "data": [8.0, 8.5],
+                                    "borderColor": "#004D40",
+                                    "fill": false
+                                }]
+                            },
+                            "options": {
+                                "responsive": true,
+                                "scales": { "y": { "beginAtZero": true, "max": 10 } },
+                                "plugins": {
+                                    "legend": { "display": false },
+                                    "tooltip": { "enabled": true },
+                                    "datalabels": { "color": "#004D40", "font": { "size": 12 } }
+                                }
+                            }
+                        }
+                        ```
+                    </div>
+                    <table>
+                        <tr><th>Ngày</th><th>Bài kiểm tra</th><th>Điểm</th><th>Bài tập</th><th>Trạng thái</th><th>Nhận xét</th></tr>
+                        <tr><td>09/07/2025</td><td>Bài 1</td><td>8.0</td><td>BT1</td><td>Hoàn thành</td><td>Khá tốt</td></tr>
+                        <tr><td>11/07/2025</td><td>Bài 2</td><td>8.5</td><td>BT2</td><td>Hoàn thành</td><td>Tiến bộ tốt</td></tr>
+                    </table>
+                    <div class="message-thread" id="python-messages">
+                        <div class="message">Thầy Hà: Tiến bộ tốt, tiếp tục phát huy! (11/07/2025)</div>
+                    </div>
+                    <button onclick="openContactModal('Thầy Hà', 'Python')">Gửi trao đổi với giáo viên</button>
+                    <div class="study-log">
+                        <p>Nhật ký học tập (11/07/2025): <span>😐</span></p>
+                        <select onchange="logEmotion(this.value, 'Python', '11/07/2025')">
+                            <option value="">Chọn cảm xúc</option>
+                            <option value="😊">😊 Vui</option>
+                            <option value="😐">😐 Bình thường</option>
+                            <option value="😩">😩 Khó khăn</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button onclick="downloadSummary()"><i class="fas fa-download"></i> Tải báo cáo tiến độ (PDF)</button>
+            <button onclick="window.location.href='messages.html'"><i class="fas fa-comment"></i> Xem tin nhắn</button>
+        </div>
+
+        <!-- Modal for Contacting Teacher -->
+        <div class="modal" id="contactModal">
+            <div class="modal-content">
+                <h3>Gửi trao đổi với giáo viên</h3>
+                <select id="teacherSelect">
+                    <option value="Cô Trâm">Cô Trâm</option>
+                    <option value="Thầy Hà">Thầy Hà</option>
+                </select>
+                <input id="subjectInput" type="text" placeholder="Chủ đề">
+                <textarea id="messageInput" placeholder="Nhập nội dung trao đổi..."></textarea>
+                <button onclick="sendMessage()">Gửi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data for charts
+        const chartData = {
+            all: { homework: [15, 2, 1], scratch: { dates: ["08/07", "10/07"], scores: [8.5, 9.0] }, python: { dates: ["09/07", "11/07"], scores: [8.0, 8.5] } },
+            scratch: { homework: [8, 1, 1], dates: ["08/07", "10/07"], scores: [8.5, 9.0] },
+            python: { homework: [7, 1, 0], dates: ["09/07", "11/07"], scores: [8.0, 8.5] }
+        };
+
+        // Message storage
+        const messages = {
+            scratch: [
+                { sender: "Cô Trâm", text: "Cần chú ý hơn đến cấu trúc code.", date: "10/07/2025", type: "received" },
+                { sender: "Phụ huynh", text: "Cảm ơn cô, em sẽ luyện tập thêm.", date: "11/07/2025", type: "sent" }
+            ],
+            python: [
+                { sender: "Thầy Hà", text: "Tiến bộ tốt, tiếp tục phát huy!", date: "11/07/2025", type: "received" }
+            ]
+        };
+
+        // Chart.js Initialization
+        const homeworkChart = new Chart(document.getElementById('homeworkChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Hoàn thành', 'Chưa hoàn thành', 'Trễ hạn'],
+                datasets: [{
+                    data: chartData.all.homework,
+                    backgroundColor: ['#00C4B4', '#F06292', '#3F51B5']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { font: { size: 12 } } },
+                    tooltip: { enabled: true },
+                    datalabels: { color: '#004D40', font: { size: 12 } }
+                },
+                animation: { duration: 1000 }
+            }
+        });
+
+        let scratchBarChart, scratchLineChart, pythonBarChart, pythonLineChart;
+
+        function initializeCharts() {
+            scratchBarChart = new Chart(document.getElementById('scratchBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: chartData.scratch.dates,
+                    datasets: [{
+                        label: 'Điểm Scratch',
+                        data: chartData.scratch.scores,
+                        backgroundColor: '#00C4B4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 10 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true },
+                        datalabels: { color: '#004D40', font: { size: 12 } }
+                    },
+                    animation: { duration: 1000 }
+                }
+            });
+
+            scratchLineChart = new Chart(document.getElementById('scratchLineChart'), {
+                type: 'line',
+                data: {
+                    labels: chartData.scratch.dates,
+                    datasets: [{
+                        label: 'Tiến bộ điểm Scratch',
+                        data: chartData.scratch.scores,
+                        borderColor: '#004D40',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 10 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true },
+                        datalabels: { color: '#004D40', font: { size: 12 } }
+                    },
+                    animation: { duration: 1000 }
+                }
+            });
+
+            pythonBarChart = new Chart(document.getElementById('pythonBarChart'), {
+                type: 'bar',
+                data: {
+                    labels: chartData.python.dates,
+                    datasets: [{
+                        label: 'Điểm Python',
+                        data: chartData.python.scores,
+                        backgroundColor: '#00C4B4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 10 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true },
+                        datalabels: { color: '#004D40', font: { size: 12 } }
+                    },
+                    animation: { duration: 1000 }
+                }
+            });
+
+            pythonLineChart = new Chart(document.getElementById('pythonLineChart'), {
+                type: 'line',
+                data: {
+                    labels: chartData.python.dates,
+                    datasets: [{
+                        label: 'Tiến bộ điểm Python',
+                        data: chartData.python.scores,
+                        borderColor: '#004D40',
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 10 } },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true },
+                        datalabels: { color: '#004D40', font: { size: 12 } }
+                    },
+                    animation: { duration: 1000 }
+                }
+            });
+        }
+
+        function updateCharts(subject) {
+            const data = chartData[subject];
+            homeworkChart.data.datasets[0].data = data.homework || chartData.all.homework;
+            homeworkChart.update();
+        }
+
+        function toggleDetails(subjectId) {
+            const details = document.getElementById(subjectId);
+            details.classList.toggle('active');
+        }
+
+        function openContactModal(teacher, subject) {
+            const modal = document.getElementById('contactModal');
+            modal.style.display = 'flex';
+            document.getElementById('teacherSelect').value = teacher;
+            document.getElementById('subjectInput').dataset.subject = subject;
+        }
+
+        function sendMessage() {
+            const teacher = document.getElementById('teacherSelect').value;
+            const subject = document.getElementById('subjectInput').dataset.subject;
+            const messageText = document.getElementById('messageInput').value.trim();
+            const messageSubject = document.getElementById('subjectInput').value.trim();
+
+            if (!messageText || !messageSubject) {
+                alert('Vui lòng điền chủ đề và nội dung tin nhắn!');
+                return;
+            }
+
+            const newMessage = {
+                sender: 'Phụ huynh',
+                text: messageText,
+                date: new Date().toLocaleDateString('vi-VN'),
+                type: 'sent'
+            };
+            messages[subject.toLowerCase()].push(newMessage);
+
+            const messageThread = document.getElementById(`${subject.toLowerCase()}-messages`);
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${newMessage.type}`;
+            messageDiv.textContent = `${newMessage.sender}: ${newMessage.text} (${newMessage.date})`;
+            messageThread.appendChild(messageDiv);
+            messageThread.scrollTop = messageThread.scrollHeight;
+
+            document.getElementById('contactModal').style.display = 'none';
+            document.getElementById('subjectInput').value = '';
+            document.getElementById('messageInput').value = '';
+            alert('Tin nhắn đã được gửi!');
+        }
+
+        function logEmotion(emotion, subject, date) {
+            alert(`Đã ghi lại cảm xúc ${emotion} cho môn ${subject} vào ngày ${date}`);
+        }
+
+        function downloadSummary() {
+            const summary = `
+                Báo cáo Tiến độ học tập (12/07/2025)
+                - Điểm trung bình: 8.5
+                - Buổi học đã tham gia: 20/30
+                - Buổi vắng mặt: 2
+                - Scratch: ĐTB 8.7 (TB lớp 8.2)
+                - Python: ĐTB 8.3 (TB lớp 8.0)
+                - Gợi ý tuần này:
+                  + Hoàn thành BT1 – Scratch (hạn cuối: 14/07/2025)
+                  + Hoàn thành BT2 – Python (hạn cuối: 15/07/2025)
+            `;
+            alert(summary);
+        }
+
+        // Initialize charts
+        initializeCharts();
+    </script>
+</body>
+</html>

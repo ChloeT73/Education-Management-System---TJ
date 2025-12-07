@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Hồ sơ học sinh - Giao diện ngang + Sidebar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #81C784;
+      --accent: #FFF9C4;
+      --text-main: #2E7D32;
+      --background: #F1F8E9;
+      --white: #fff;
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--background);
+      color: #333;
+      padding: 20px;
+    }
+
+    .layout {
+      display: flex;
+      max-width: 1200px;
+      margin: auto;
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+      background-color: var(--white);
+      position: relative;
+    }
+
+    .sidebar {
+      width: 220px;
+      background-color: #C8E6C9;
+      border-right: 2px solid #A5D6A7;
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
+      padding: 24px 16px;
+    }
+
+    .sidebar h3 {
+      color: var(--text-main);
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .sidebar ul li {
+      margin-bottom: 12px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #2E7D32;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar ul li:hover {
+      text-decoration: underline;
+      color: #1B5E20;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      gap: 32px;
+      padding: 60px 32px 32px; /* thêm top-padding để tránh che bởi nút X */
+      position: relative;
+      flex-direction: row;
+    }
+
+    .close-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      font-size: 22px;
+      background: var(--white);
+      border: 2px solid #ccc;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #777;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    .close-button:hover {
+      background-color: #fce4ec;
+      color: #000;
+    }
+
+    .left-panel {
+      width: 30%;
+      text-align: center;
+    }
+
+    .section-header {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-main);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+  .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background-color: #AED581;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 42px;
+      color: var(--text-main);
+    }
+
+    .student-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 12px;
+      color: var(--text-main);
+    }
+
+    .avatar-button {
+      margin-top: 12px;
+      background-color: #ffffff;
+      border: 2px dashed #A5D6A7;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      color: #2E7D32;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .avatar-button i {
+      font-size: 16px;
+    }
+
+    .avatar-button:hover {
+      background-color: #E8F5E9;
+    }
+
+    .right-panel {
+      width: 70%;
+    }
+
+    .section {
+      background-color: #FAFAFA;
+      border: 1px solid #E0E0E0;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--text-main);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title .emoji {
+      font-size: 20px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+
+    .label {
+      color: #555;
+      width: 40%;
+    }
+
+    .value {
+      font-weight: 600;
+      width: 58%;
+      text-align: right;
+    }
+
+    .support-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      padding: 10px 16px;
+      background-color: #FFD54F;
+      color: #333;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 12px;
+      transition: background-color 0.3s ease;
+    }
+
+    .support-link:hover {
+      background-color: #FBC02D;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .main-content {
+        flex-direction: column;
+      }
+
+      .left-panel, .right-panel {
+        width: 100%;
+      }
+
+      .info-row {
+        flex-direction: column;
+        text-align: left;
+      }
+
+      .label, .value {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+    <!-- Nút đóng -->
+    <button class="close-button" onclick="history.back()" title="Đóng"><i class="fas fa-times"></i></button>
+
+
+    <!-- Nội dung chính -->
+    <div class="main-content">
+      <!-- Left -->
+      <div class="left-panel">
+        <div class="section-header">Thông tin học sinh</div>
+        <div class="avatar"><i class="fas fa-child"></i></div>
+        <div class="student-name">Thanh Trúc</div>
+        <button class="avatar-button"><i class="fas fa-camera"></i> Thay ảnh đại diện</button>
+      </div>
+
+      <!-- Right -->
+      <div class="right-panel">
+        <!-- Học sinh -->
+        <div class="section">
+          <div class="section-title"><i class="fas fa-user-graduate"></i> Học sinh</div>
+          <div class="info-row"><span class="label">Họ và tên:</span><span class="value">Nguyễn Minh Khang</span></div>
+          <div class="info-row"><span class="label">Giới tính:</span><span class="value">Nam</span></div>
+          <div class="info-row"><span class="label">Ngày sinh:</span><span class="value">12/05/2015</span></div>
+          <div class="info-row"><span class="label">Địa chỉ:</span><span class="value">25 Nguyễn Thái Học, Q.1</span></div>
+          <div class="info-row"><span class="label">Lớp:</span><span class="value">3A</span></div>
+          <div class="info-row"><span class="label">Trung tâm:</span><span class="value">Tech Junior - Q1</span></div>
+        </div>
+
+        <!-- Phụ huynh -->
+        <div class="section">
+          <div class="section-title"><i class="fas fa-user-friends"></i> Phụ huynh</div>
+          <div class="info-row"><span class="label">Tên:</span><span class="value">Nguyễn Thị Lan</span></div>
+          <div class="info-row"><span class="label">Ngày sinh:</span><span class="value">01/01/1980</span></div>
+          <div class="info-row"><span class="label">SĐT:</span><span class="value">0988123456</span></div>
+          <div class="info-row"><span class="label">Email:</span><span class="value">lan@gmail.com</span></div>
+        </div>
+
+        <!-- Tài khoản -->
+        <div class="section">
+          <a class="support-link" href="#"><i class="fas fa-headset"></i> Trung tâm hỗ trợ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
+
