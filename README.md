@@ -11,6 +11,7 @@ Use Cases & Sequence Diagrams: Functional requirements analysis using UML standa
 Access Rights and User Management: Role-based access configuration (Admin, Class Manager, Teacher, Student, Parent, etc.).
 
 Goal: Support the development of educational software (Tech Junior) with emphasis on usability, security, and education-specific workflows.
+
 Key Content
 The core of this repo is the comprehensive SRS document, which outlines the system's functional and non-functional requirements based on collaborative BA efforts.
 
